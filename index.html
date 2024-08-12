@@ -1,12 +1,18 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "nm1t8kaa33");
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>H-Tab</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
     <link rel="icon" type="image/jpg" href="https://z1.ax1x.com/2023/10/04/pPObVL6.jpg">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
     <style>
         @font-face {
             font-family: 'Expansiva-1';
@@ -174,20 +180,9 @@
 </head>
 <body>
 
+    <div id="xf-MusicPlayer"   data-themeColor="xf-sky" data-songList="9182006753"data-lyrics="0"></div>
+    <script src="./MusicPlayer/js/xf-MusicPlayer.min.js"></script>
 
-    <div id="aplayer" style="display:none"></div> 
-
-    <script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
-    <meting-js server="netease" type="playlist" id="9182006753" fixed="true" autoplay="false"></meting-js>
-
-    <script>
-      document.addEventListener('contextmenu', function(e) {
-        e.preventDefault();
-        const aplayerContainer = document.getElementById('aplayer');
-        aplayerContainer.style.display = aplayerContainer.style.display === 'none' ? 'block' : 'none';
-      });
-    </script>
 
 
     <div id="mainContent">
