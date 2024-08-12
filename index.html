@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H-Tab</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <link rel="icon" type="image/jpg" href="https://z1.ax1x.com/2023/10/04/pPObVL6.jpg">
+    <style>
+        @font-face {
+            font-family: 'Expansiva-1';
+            src: url('fonts/Expansiva-1.otf') format('opentype'); /* 替换为您的字体文件路径和格式 */
+            font-weight: normal;
+            font-style: normal;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden; /* 隐藏滚动条 */
+            background-image: url('default-background.jpg'); /* 默认壁纸 */
+            background-size: cover;
+            color: white;
+            font-family: 'Digital-7', monospace; /* 使用数码管字体 */
+            cursor: context-menu; /* 显示右键菜单光标 */
+            transition: background 0.5s; /* 背景切换动画 */
+            font-family: 'Expansiva-1', sans-serif; /* 使用 Expansiva-1 字体 */
+        }
+        #mainContent {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: fiex-start;
+            height: 95vh; /* 占满整个屏幕高度 */
+            transition: opacity 0.5s; /* 添加淡入淡出效果 */
+        }
+        #mainContent.hidden {
+            opacity: 0; /* 设置透明度为0 */
+            pointer-events: none; /* 不响应鼠标事件 */
+        }
+        h1 {
+            margin-bottom: 10px;
+            font-size: 80px; /* 设置时钟字体大小 */
+            font-family: 'Expansiva-1', sans-serif; /* 使用 Expansiva-1 字体 */
+            text-shadow: 0 0 5px black; /* 添加黑色描边 */
+        }
+        #searchContainer {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px; /* 圆角边框 */
+            padding: 10px;
+            backdrop-filter: blur(10px); /* 亚克力效果 */
+            transition: transform 0.5s; /* 添加动画 */
+            margin-top: 10px; /* 调整搜索框与时钟的间距 */
+        }
+        .icon {
+            margin-right: 10px;
+            width: 24px;
+            height: 24px;
+        }
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            width: 300px;
+            border: none;
+            border-radius: 20px; /* 圆角边框 */
+            outline: none;
+            color: black;
+            background: rgba(255, 255, 255, 0.2);
+            transition: opacity 0.5s; /* 添加动画 */
+        }
+        select {
+            margin-left: 10px;
+            border: none;
+            border-radius: 20px; /* 圆角边框 */
+            background: rgba(255, 255, 255, 0.8);
+            color: black;
+            transition: opacity 0.5s; /* 添加动画 */
+        }
+        #searchButton {
+            background: none;
+            border: none;
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 16px; /* 设置字体大小 */
+            transition: opacity 0.5s; /* 添加动画 */
+        }
+        /* 快捷跳转页面样式 */
+        .quick-links {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            width: 100vw;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: opacity 0.5s; /* 淡入淡出效果 */
+            opacity: 0;
+            pointer-events: none; /* 不响应鼠标事件 */
+        }
+        .quick-links.active {
+            opacity: 1;
+            pointer-events: auto; /* 允许响应鼠标事件 */
+        }
+        .link-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px; /* 圆角边框 */
+            padding: 20px;
+            margin: 20px;
+            backdrop-filter: blur(10px); /* 亚克力效果 */
+            transition: transform 0.3s; /* 添加动画 */
+            width: 300px; /* 设置宽度 */
+        }
+        .link-container:hover {
+            transform: scale(1.05); /* 鼠标悬停放大 */
+        }
+        .link {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 20px;
+            text-decoration: none;
+            color: white;
+            transition: color 0.3s;
+            text-shadow: 0 0 5px black; /* 添加黑色描边 */
+        }
+        .link:hover {
+            color: #ffcc00; /* 悬停效果 */
+        }
+        .link-icon {
+            margin-right: 10px;
+            width: 32px;
+            height: 32px;
+        }
+        .link-description {
+            font-size: 14px;
+            color: black;
+        }
+        /* 自定义右键菜单样式 */
+        #contextMenu {
+            display: none;
+            position: absolute;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+        #contextMenu ul {
+            list-style: none;
+            padding: 10px;
+            margin: 0;
+        }
+        #contextMenu li {
+            padding: 8px 12px;
+            cursor: pointer;
+            color: black; /* 设置文字颜色为黑色 */
+        }
+        #contextMenu li:hover {
+            background: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="mainContent">
+        <h1 id="clock"></h1>
+
+        <div id="searchContainer">
+            <img id="searchIcon" class="icon" src="https://www.bing.com/favicon.ico" alt="搜索引擎图标">
+            <input type="text" id="query" placeholder="输入搜索内容..." onkeydown="checkEnter(event)">
+            <select id="searchEngine" onchange="updateIcon()">
+                <option value="baidu">百度</option>
+                <option value="google">谷歌</option>
+                <option value="bing" selected>必应</option>  <!-- 设置默认搜索引擎 -->
+                <option value="bilibili">哔哩哔哩</option>
+            </select>
+            <button id="searchButton" onclick="performSearch()"> </button> <!-- 使用Unicode字符 -->
+        </div>
+    </div>
+
+    <div class="quick-links" id="quickLinks">
+        <div class="link-container">
+            <a href="https://home.hongshi.us.kg" class="link">
+                <img src="https://home.hongshi.us.kg/images/icon/favicon.ico" alt="主页图标" class="link-icon">
+                红石の主页
+            </a>
+            <div class="link-description">站长的个人主页</div>
+        </div>
+        <div class="link-container">
+            <a href="https://error418-oneapi.hf.space" class="link">
+                <img src="https://tse4-mm.cn.bing.net/th/id/OIP-C.zswuhpFWOwVs6RWjH87LugAAAA?rs=1&pid=ImgDetMain alt="API图标" class="link-icon">
+                公益API
+            </a>
+            <div class="link-description">由站长搭建的免费API服务</div>
+        </div>
+        <div class="link-container">
+            <a href="https://blog.hongshi.us.kg" class="link">
+                <img src="https://z1.ax1x.com/2023/10/04/pPObVL6.jpg" alt="博客图标" class="link-icon">
+                个人博客
+            </a>
+            <div class="link-description">站长的个人博客</div>
+        </div>
+        <div class="link-container">
+            <a href="https://space.bilibili.com/522549816" class="link">
+                <img src="https://www.bilibili.com/favicon.ico" alt="哔哩哔哩图标" class="link-icon">
+                我的B站主页
+            </a>
+            <div class="link-description">中国最大的视频网站</div>
+        </div>
+        <div class="link-container">
+            <a href="https://weather.hongshi.us.kg" class="link">
+                <img src="https://img.ixintu.com/upload/jpg/20210531/6a13ff37e815fbc275b99d6cffdb6aba_44884_800_800.jpg!con" alt="天气图标" class="link-icon">
+                天气预报
+            </a>
+            <div class="link-description">由站长搭建的天气预报网站</div>
+        </div>
+    </div>
+
+    <div id="contextMenu">
+        <ul>
+            <li onclick="previousWallpaper()">上一张壁纸</li>
+            <li onclick="downloadWallpaper()">壁纸下载</li>
+            <li onclick="nextWallpaper()">下一张壁纸</li>
+            <li onclick="customWallpaper()">自定义壁纸</li>
+        </ul>
+    </div>
+
+    <script>
+        const searchEngines = {
+            baidu: {
+                url: "https://www.baidu.com/s?wd=",
+                icon: "https://www.baidu.com/favicon.ico"
+            },
+            google: {
+                url: "https://www.google.com/search?q=",
+                icon: "https://ts1.cn.mm.bing.net/th/id/R-C.712611660966511d36aa5d36250faf5b?rik=89TZ1ioGyzvhFw&riu=http%3a%2f%2fi-1.apkbus.com%2f2023%2f5%2f10%2f8073df40-4702-4eaa-a59e-8329a110ae82.png&ehk=9igKXW4Nj81bVxH0yWbd6yrEWSMhgPzZ2CrK2Cj25Jo%3d&risl=&pid=ImgRaw&r=0"
+            },
+            bing: {
+                url: "https://www.bing.com/search?q=",
+                icon: "https://www.bing.com/favicon.ico"
+            },
+            bilibili: {
+                url: "https://search.bilibili.com/all?keyword=",
+                icon: "https://www.bilibili.com/favicon.ico"
+            }
+        };
+
+        let currentEngine = 'bing'; // 默认搜索引擎
+        let wallpapers = [
+            'https://img.hongshi.us.kg/file/e8b53722acd5ddb329175.jpg',
+            'https://img.hongshi.us.kg/file/518e13b618554cd495532.jpg',
+            'https://img.hongshi.us.kg/file/5e14fa04694cae6f11b04.jpg',
+            'https://img.hongshi.us.kg/file/76895998333497b5cf253.jpg',
+            'https://img.hongshi.us.kg/file/4f14f5808446b2c43b1a8.jpg',
+            'https://img.hongshi.us.kg/file/d050db4077b59f17ecb88.jpg',
+            'https://img.hongshi.us.kg/file/69f1f258183230b6e4e20.jpg',
+            'https://img.hongshi.us.kg/file/e19cf7e182f610b108f20.jpg',
+            'https://img.hongshi.us.kg/file/1323f184e87a742c48cb4.jpg'
+        ];
+        let currentWallpaperIndex = 0;
+
+        function updateIcon() {
+            currentEngine = document.getElementById('searchEngine').value;
+            document.getElementById('searchIcon').src = searchEngines[currentEngine].icon;
+        }
+
+        function performSearch() {
+            const query = document.getElementById('query').value;
+            const url = searchEngines[currentEngine].url + encodeURIComponent(query);
+            if (url) {
+                window.open(url, '_blank');
+            }
+        }
+
+        function checkEnter(event) {
+            if (event.key === 'Enter') {
+                performSearch();
+            }
+        }
+
+        function updateWallpaper() {
+            document.body.style.backgroundImage = `url('${wallpapers[currentWallpaperIndex]}')`;
+        }
+
+        function previousWallpaper() {
+            currentWallpaperIndex = (currentWallpaperIndex - 1 + wallpapers.length) % wallpapers.length;
+            updateWallpaper();
+        }
+
+        function nextWallpaper() {
+            currentWallpaperIndex = (currentWallpaperIndex + 1) % wallpapers.length;
+            updateWallpaper();
+        }
+
+        function downloadWallpaper() {
+            const link = document.createElement('a');
+            link.href = wallpapers[currentWallpaperIndex];
+            link.download = 'wallpaper.jpg'; // 下载文件名
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function customWallpaper() {
+            const url = prompt("请输入壁纸的URL:");
+            if (url) {
+                wallpapers.push(url);
+                currentWallpaperIndex = wallpapers.length - 1; // 设置为新壁纸
+                updateWallpaper();
+            }
+        }
+
+        // 右键菜单
+        document.addEventListener('contextmenu', function(event) {
+            event.preventDefault();
+            const menu = document.getElementById('contextMenu');
+            menu.style.display = 'block';
+            menu.style.left = `${event.pageX}px`;
+            menu.style.top = `${event.pageY}px`;
+        });
+
+        document.addEventListener('click', function() {
+            document.getElementById('contextMenu').style.display = 'none';
+        });
+
+        // 滚轮事件
+        const mainContent = document.getElementById('mainContent');
+        const quickLinks = document.getElementById('quickLinks');
+
+        window.addEventListener('wheel', function(event) {
+            if (event.deltaY > 0) {
+                mainContent.classList.add('hidden');
+                quickLinks.classList.add('active');
+            } else {
+                mainContent.classList.remove('hidden');
+                quickLinks.classList.remove('active');
+            }
+        });
+
+        // 初始化壁纸
+        function getRandomWallpaper() {
+            currentWallpaperIndex = Math.floor(Math.random() * wallpapers.length);
+            updateWallpaper();
+        }
+        getRandomWallpaper(); // 每次打开页面时随机壁纸
+        updateIcon();
+
+        // 时钟
+        const clock = document.getElementById('clock');
+        function updateTime() {
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const seconds = now.getSeconds().toString().padStart(2, '0');
+            clock.innerText = `${hours}:${minutes}:${seconds}`;
+        }
+        setInterval(updateTime, 1000); // 每秒更新一次
+        updateTime(); // 初始化时钟
+    </script>
+
+</body>
+</html>
