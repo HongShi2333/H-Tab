@@ -6,6 +6,7 @@
     <title>H-Tab</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
     <link rel="icon" type="image/jpg" href="https://z1.ax1x.com/2023/10/04/pPObVL6.jpg">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
     <style>
         @font-face {
             font-family: 'Expansiva-1';
@@ -51,10 +52,10 @@
         #searchContainer {
             display: flex;
             align-items: center;
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0);
             border-radius: 20px; /* 圆角边框 */
             padding: 10px;
-            backdrop-filter: blur(10px); /* 亚克力效果 */
+            backdrop-filter: blur(0px); /* 亚克力效果 */
             transition: transform 0.5s; /* 添加动画 */
             margin-top: 10px; /* 调整搜索框与时钟的间距 */
         }
@@ -71,14 +72,14 @@
             border-radius: 20px; /* 圆角边框 */
             outline: none;
             color: black;
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0);
             transition: opacity 0.5s; /* 添加动画 */
         }
         select {
             margin-left: 10px;
             border: none;
             border-radius: 20px; /* 圆角边框 */
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.1);
             color: black;
             transition: opacity 0.5s; /* 添加动画 */
         }
@@ -150,7 +151,7 @@
         #contextMenu {
             display: none;
             position: absolute;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.2);
             border: 1px solid #ccc;
             border-radius: 5px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
@@ -172,6 +173,22 @@
     </style>
 </head>
 <body>
+
+
+    <div id="aplayer" style="display:none"></div> 
+
+    <script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+    <meting-js server="netease" type="playlist" id="9182006753" fixed="true" autoplay="false"></meting-js>
+
+    <script>
+      document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        const aplayerContainer = document.getElementById('aplayer');
+        aplayerContainer.style.display = aplayerContainer.style.display === 'none' ? 'block' : 'none';
+      });
+    </script>
+
 
     <div id="mainContent">
         <h1 id="clock"></h1>
